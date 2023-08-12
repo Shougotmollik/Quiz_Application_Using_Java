@@ -65,8 +65,8 @@ public class Login extends JFrame implements ActionListener{
 
 
         //screen frame config
-        setSize(1200,500);
-        setLocation(200,150);
+        setSize(1200,650);
+        setLocation(10,10);
         setVisible(true);
     }
     public static void main(String[] args) {
