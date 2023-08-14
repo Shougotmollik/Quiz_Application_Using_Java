@@ -1,16 +1,23 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class Quiz extends JFrame {
+public class Quiz extends JFrame implements ActionListener {
     String[][] questions =new String[10][5];
     String[][] answers=new String[10][2];
-
+    String[][] userAnswers=new String[10][1];
     JLabel quesNo,question;
     JRadioButton opt1,opt2,opt3,opt4;
-
+    ButtonGroup groupOptions;
+    JButton next,lifeLine,submit;
     public static int timer=20;
-    Quiz(){
-
+    public static int ans_given=0;
+    public static int count=0;
+    public static int score=0;
+    String name;
+    Quiz(String name){
+        this.name=name;
         //Frame background colour
         getContentPane().setBackground(Color.WHITE);
         setLayout(null);
@@ -134,7 +141,7 @@ public class Quiz extends JFrame {
         opt4.setFont(new Font("Serif",Font.PLAIN,15));
         add(opt4);
 
-        ButtonGroup groupOptions=new ButtonGroup();
+        groupOptions=new ButtonGroup();
         groupOptions.add(opt1);
         groupOptions.add(opt2);
         groupOptions.add(opt3);
@@ -143,26 +150,29 @@ public class Quiz extends JFrame {
 
         //Button
 
-        JButton next=new JButton("Next");
+        next=new JButton("Next");
         next.setBounds(750,550,80,30);
         next.setBackground(new Color(30,105,238));
         next.setForeground(Color.WHITE);
+        next.addActionListener(this);
         add(next);
 
-        JButton lifeLine=new JButton("50-50");
+        lifeLine=new JButton("50-50");
         lifeLine.setBounds(875,550,80,30);
         lifeLine.setBackground(new Color(30,105,238));
         lifeLine.setForeground(Color.WHITE);
+        lifeLine.addActionListener(this);
         add(lifeLine);
 
-        JButton submit=new JButton("Submit");
+        submit=new JButton("Submit");
         submit.setBounds(1000,550,80,30);
         submit.setBackground(new Color(30,105,238));
         submit.setForeground(Color.WHITE);
+        submit.addActionListener(this);
         submit.setEnabled(false);
         add(submit);
 
-        start(0);
+        start(count);
 
 
         //frame Size
@@ -191,17 +201,108 @@ public class Quiz extends JFrame {
         }catch (Exception e){
             e.printStackTrace();
         }
+        if (ans_given==1){
+            ans_given=0;
+            timer=20;
+        } else if (timer<0) {
+            timer=20;
+            opt1.setEnabled(true);
+            opt2.setEnabled(true);
+            opt3.setEnabled(true);
+            opt4.setEnabled(true);
+            if (count==8){
+                next.setEnabled(false);
+                submit.setEnabled(true);
+            }
+            if (count==9){  //submit button
+                if (groupOptions.getSelection()==null){
+                    userAnswers[count][0]="";
+                }else {
+                    userAnswers[count][0]=groupOptions.getSelection().getActionCommand();
+                }
+                for (int i = 0; i < userAnswers.length; i++) {
+                    if(userAnswers[i][0].equals(answers[i][0])){
+                        score+=10;
+                    }
+                }
+                setVisible(false);//score
+                new Score(name,score);
+            }else{ // next button
+                if (groupOptions.getSelection()==null){
+                    userAnswers[count][0]="";
+                }else {
+                    userAnswers[count][0]=groupOptions.getSelection().getActionCommand();
+                }
+                count++;
+                start(count);
+            }
+        }
     }
 
     public void  start (int count ){
         quesNo.setText(" " +(count+1) +". ");
         question.setText(questions[count][0]);
         opt1.setText(questions[count][1]);
+        opt1.setActionCommand(questions[count][1]);
+
         opt2.setText(questions[count][2]);
+        opt2.setActionCommand(questions[count][2]);
+
         opt3.setText(questions[count][3]);
+        opt3.setActionCommand(questions[count][3]);
+
         opt4.setText(questions[count][4]);
+        opt4.setActionCommand(questions[count][4]);
+
+        groupOptions.clearSelection();
     }
     public static void main(String[] args) {
-        new Quiz();
+        new Quiz("User");
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource()==next){
+            repaint();
+            opt1.setEnabled(true);
+            opt2.setEnabled(true);
+            opt3.setEnabled(true);
+            opt4.setEnabled(true);
+            if (groupOptions.getSelection()==null){
+                userAnswers[count][0]="";
+            }else {
+                userAnswers[count][0]=groupOptions.getSelection().getActionCommand();
+            }
+            if (count==8){
+                next.setEnabled(false);
+                submit.setEnabled(true);
+            }
+            ans_given=1;
+            count++;
+            start(count);
+        } else if (e.getSource()==lifeLine) {
+            if(count==2||count==4|| count==6||count==9){
+                opt2.setEnabled(false);
+                opt3.setEnabled(false);
+            }else {
+                opt1.setEnabled(false);
+                opt4.setEnabled(false);
+            }
+            lifeLine.setEnabled(false);
+        }else {
+            ans_given=1;
+            if (groupOptions.getSelection()==null){
+                userAnswers[count][0]="";
+            }else {
+                userAnswers[count][0]=groupOptions.getSelection().getActionCommand();
+            }
+            for (int i = 0; i < userAnswers.length; i++) {
+                if(userAnswers[i][0].equals(answers[i][0])){
+                    score+=10;
+                }
+            }
+            setVisible(false);
+            new Score(name,score);
+        }
     }
 }
