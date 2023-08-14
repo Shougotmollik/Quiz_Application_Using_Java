@@ -5,7 +5,10 @@ A quiz application using Java is a software program that allows users to partici
 
 
 ## Screenshots
+<img width="890" alt="Screenshot 2023-08-14 230307" src="https://github.com/Shougotmollik/Quiz_Application_Using_Java/assets/113712457/97435846-ab3e-4c2b-b0d0-3b11b2c8754a">
 
+<img width="887" alt="Screenshot 2023-08-14 230412" src="https://github.com/Shougotmollik/Quiz_Application_Using_Java/assets/113712457/1061c10a-de78-4276-8c17-3fcbbdc98f16">
+<img width="890" alt="Screenshot 2023-08-14 230443" src="https://github.com/Shougotmollik/Quiz_Application_Using_Java/assets/113712457/56b68d9b-97d0-45d9-9fae-1989c12522e4">
 
 
 ## Documentation
